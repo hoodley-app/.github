@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  # Główne branche
+  push:
+    branches: [ main, develop, release ]
+  # Pull requesty
+  pull_request:
+    branches: [ main, develop, release ]
+  # Możliwość ręcznego uruchomienia
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Pełna historia dla conventional commits
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+
+      # Cache NuGet packages
+      - name: Cache NuGet packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      # Restore dependencies with cache
+      - name: Restore dependencies
+        run: dotnet restore
+        env:
+          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+          DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+      # Build all projects
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      # Run all tests
+      - name: Test
+        run: dotnet test --no-build --configuration Release --verbosity minimal
+
+      # Dodatkowe kroki dla głównych branchy
+      - name: Conventional Commits Check
+        if: github.event_name == 'pull_request'
+        uses: webiny/action-conventional-commits@v1.1.0
+
+      # Publikacja artefaktów dla release brancha
+      - name: Publish Artifacts
+        if: github.ref == 'refs/heads/release'
+        run: dotnet publish --no-build --configuration Release --output ./publish
+
+      - name: Upload Artifacts
+        if: github.ref == 'refs/heads/release'
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-artifacts
+          path: ./publish 
