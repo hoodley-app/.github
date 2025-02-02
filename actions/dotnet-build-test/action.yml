@@ -1,0 +1,18 @@
+name: '.NET Build and Test'
+description: 'Builds and tests .NET projects'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Cache NuGet
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        
+    - name: Build and Test
+      shell: bash
+      run: |
+        dotnet restore
+        dotnet build --no-restore
+        dotnet test --no-build --verbosity minimal 

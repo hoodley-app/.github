@@ -11,6 +11,12 @@ on:
   workflow_dispatch:
 
 jobs:
+  backend:
+    uses: ./.github/workflow-templates/dotnet-template.yml@main
+  
+  frontend:
+    uses: ./.github/workflow-templates/nextjs-template.yml@main
+
   build-and-test:
     runs-on: ubuntu-latest
     

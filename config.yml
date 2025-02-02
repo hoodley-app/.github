@@ -1,0 +1,125 @@
+# Konfiguracja organizacji Hoodley
+
+# Ustawienia repozytoriów
+repository:
+  # Domyślne ustawienia dla nowych repozytoriów
+  default:
+    # Ochrona branchy
+    branch_protection:
+      main:
+        required_pull_request_reviews:
+          required_approving_review_count: 1
+        required_status_checks:
+          strict: true
+          contexts: ['build-and-test']
+        enforce_admins: true
+      develop:
+        required_pull_request_reviews:
+          required_approving_review_count: 1
+        required_status_checks:
+          strict: true
+      release:
+        required_pull_request_reviews:
+          required_approving_review_count: 2
+        required_status_checks:
+          strict: true
+
+    # Domyślne etykiety
+    labels:
+      - name: 'bug'
+        color: 'd73a4a'
+        description: 'Coś nie działa'
+      - name: 'feature'
+        color: '0075ca'
+        description: 'Nowa funkcjonalność'
+      - name: 'documentation'
+        color: '0075ca'
+        description: 'Zmiany w dokumentacji'
+      - name: 'breaking'
+        color: 'b60205'
+        description: 'Wprowadza breaking changes'
+
+# Ustawienia pull requestów
+pull_request:
+  # Wymagane sekcje w opisie PR
+  template:
+    - type: 'checkboxes'
+      attributes:
+        label: 'Checklist'
+        options:
+          - label: 'Testy zostały dodane/zaktualizowane'
+          - label: 'Dokumentacja została zaktualizowana'
+          - label: 'Breaking changes zostały oznaczone'
+          - label: 'Kod jest zgodny z konwencjami'
+
+# Ustawienia dla semantic-release
+semantic_release:
+  # Konfiguracja branchy
+  branches: 
+    - main
+    - name: release
+      prerelease: true
+    - name: develop
+      prerelease: true
+      channel: develop
+
+# Ustawienia dla commitlint
+commitlint:
+  rules:
+    type-enum:
+      - 2
+      - always
+      - ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'chore', 'revert', 'ci', 'build']
+
+# Ustawienia dla GitHub Actions
+actions:
+  # Domyślne środowisko
+  environment:
+    node-version: 'lts/*'
+    dotnet-version: '9.0.x'
+  
+  # Cache
+  cache:
+    npm:
+      path: ~/.npm
+      key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+    nuget:
+      path: ~/.nuget/packages
+      key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+
+# Ustawienia dla Docker
+docker:
+  # Bazowe obrazy
+  base_images:
+    dotnet: mcr.microsoft.com/dotnet/sdk:9.0-alpine
+    node: node:lts-alpine
+  
+  # Registry
+  registry:
+    url: ghcr.io
+    organization: hoodley
+
+# Ustawienia bezpieczeństwa
+security:
+  # Skanery bezpieczeństwa
+  scanners:
+    - sonarcloud
+    - snyk
+    - dependabot
+  
+  # Wymagane status checks
+  required_checks:
+    - 'Security Scan'
+    - 'SonarCloud Analysis'
+    - 'Dependency Review'
+
+# Ustawienia dla code review
+code_review:
+  # Automatyczni recenzenci
+  auto_reviewers:
+    backend:
+      - backend-team-lead
+      - senior-backend-dev
+    frontend:
+      - frontend-team-lead
+      - senior-frontend-dev 
