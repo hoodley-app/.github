@@ -16,52 +16,55 @@ if [ ! -d ".git" ]; then
   exit 1
 fi
 
+# Tworzenie głównej struktury katalogów
+mkdir -p src
+
 # Tworzenie struktury katalogów z bezpiecznymi nazwami
 mkdir -p \
-  "microservices/admin" \
-  "microservices/analytics" \
-  "microservices/agreements" \
-  "microservices/booking" \
-  "microservices/catalog" \
-  "microservices/communication" \
-  "microservices/file-storage" \
-  "microservices/identity" \
-  "microservices/notification" \
-  "microservices/payment" \
-  "microservices/review" \
-  "microservices/security" \
-  "microservices/verification" \
-  "frontend/web-client" \
-  "frontend/mobile-client" \
-  "bff/web-api" \
-  "bff/mobile-api" \
+  "src/microservices/admin" \
+  "src/microservices/analytics" \
+  "src/microservices/agreements" \
+  "src/microservices/booking" \
+  "src/microservices/catalog" \
+  "src/microservices/communication" \
+  "src/microservices/file-storage" \
+  "src/microservices/identity" \
+  "src/microservices/notification" \
+  "src/microservices/payment" \
+  "src/microservices/review" \
+  "src/microservices/security" \
+  "src/microservices/verification" \
+  "src/frontend/web-client" \
+  "src/frontend/mobile-client" \
+  "src/bff/web-api" \
+  "src/bff/mobile-api" \
   "shared/templates" \
   "shared/config"
 
 # Mapowanie bezpiecznych nazw katalogów do repozytoriów
 declare -A repositories=(
   # Mikroservisy
-  ["microservices/admin"]="https://github.com/hoodley-app/Hoodley.Admin.git"
-  ["microservices/analytics"]="https://github.com/hoodley-app/Hoodley.Analytics.git"
-  ["microservices/file-storage"]="https://github.com/hoodley-app/Hoodley.FileStorage.git"
-  ["microservices/identity"]="https://github.com/hoodley-app/Hoodley.Identity.git"
-  ["microservices/agreements"]="https://github.com/hoodley-app/Hoodley.Agreements.git"
-  ["microservices/booking"]="https://github.com/hoodley-app/Hoodley.Booking.git"
-  ["microservices/catalog"]="https://github.com/hoodley-app/Hoodley.Catalog.git"
-  ["microservices/communication"]="https://github.com/hoodley-app/Hoodley.Communication.git"
-  ["microservices/notification"]="https://github.com/hoodley-app/Hoodley.Notification.git"
-  ["microservices/payment"]="https://github.com/hoodley-app/Hoodley.Payment.git"
-  ["microservices/review"]="https://github.com/hoodley-app/Hoodley.Review.git"
-  ["microservices/security"]="https://github.com/hoodley-app/Hoodley.Security.git"
-  ["microservices/verification"]="https://github.com/hoodley-app/Hoodley.Verification.git"
+  ["src/microservices/admin"]="https://github.com/hoodley-app/Hoodley.Admin.git"
+  ["src/microservices/analytics"]="https://github.com/hoodley-app/Hoodley.Analytics.git"
+  ["src/microservices/file-storage"]="https://github.com/hoodley-app/Hoodley.FileStorage.git"
+  ["src/microservices/identity"]="https://github.com/hoodley-app/Hoodley.Identity.git"
+  ["src/microservices/agreements"]="https://github.com/hoodley-app/Hoodley.Agreements.git"
+  ["src/microservices/booking"]="https://github.com/hoodley-app/Hoodley.Booking.git"
+  ["src/microservices/catalog"]="https://github.com/hoodley-app/Hoodley.Catalog.git"
+  ["src/microservices/communication"]="https://github.com/hoodley-app/Hoodley.Communication.git"
+  ["src/microservices/notification"]="https://github.com/hoodley-app/Hoodley.Notification.git"
+  ["src/microservices/payment"]="https://github.com/hoodley-app/Hoodley.Payment.git"
+  ["src/microservices/review"]="https://github.com/hoodley-app/Hoodley.Review.git"
+  ["src/microservices/security"]="https://github.com/hoodley-app/Hoodley.Security.git"
+  ["src/microservices/verification"]="https://github.com/hoodley-app/Hoodley.Verification.git"
   
   # Frontend
-  ["frontend/web-client"]="https://github.com/hoodley-app/hoodley.web.frontend.git"
-  ["frontend/mobile-client"]="https://github.com/hoodley-app/Hoodley.Mobile.Frontend.git"
+  ["src/frontend/web-client"]="https://github.com/hoodley-app/hoodley.web.frontend.git"
+  ["src/frontend/mobile-client"]="https://github.com/hoodley-app/Hoodley.Mobile.Frontend.git"
   
   # BFF
-  ["bff/web-api"]="https://github.com/hoodley-app/Hoodley.Web.BFF.git"
-  ["bff/mobile-api"]="https://github.com/hoodley-app/Hoodley.Mobile.BFF.git"
+  ["src/bff/web-api"]="https://github.com/hoodley-app/Hoodley.Web.BFF.git"
+  ["src/bff/mobile-api"]="https://github.com/hoodley-app/Hoodley.Mobile.BFF.git"
 )
 
 # Funkcja do dodawania submodułu

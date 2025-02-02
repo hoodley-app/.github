@@ -1,24 +1,61 @@
 version: 2
 updates:
+  # Konfiguracja dla main
   - package-ecosystem: "nuget"
     directory: "/"
+    target-branch: "develop"
     schedule:
       interval: "weekly"
     groups:
       dependencies:
         patterns:
           - "*"
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # Konfiguracja dla develop
+  - package-ecosystem: "nuget"
+    directory: "/"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+    groups:
+      dependencies:
+        patterns:
+          - "*"
+    allow:
+      - dependency-type: "all"
+
+  # Konfiguracja dla release
+  - package-ecosystem: "nuget"
+    directory: "/"
+    target-branch: "release"
+    schedule:
+      interval: "monthly"
+    groups:
+      dependencies:
+        patterns:
+          - "*"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
 
   - package-ecosystem: "npm"
     directory: "/"
+    target-branch: "develop"
     schedule:
       interval: "weekly"
     groups:
       dependencies:
         patterns:
           - "*"
+    open-pull-requests-limit: 10
 
   - package-ecosystem: "docker"
     directory: "/"
+    target-branch: "develop"
     schedule:
-      interval: "weekly" 
+      interval: "weekly"
+    open-pull-requests-limit: 10 

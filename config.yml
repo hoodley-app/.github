@@ -123,4 +123,56 @@ code_review:
       - senior-backend-dev
     frontend:
       - frontend-team-lead
-      - senior-frontend-dev 
+      - senior-frontend-dev
+
+# Ustawienia per branch
+branches:
+  main:
+    protection:
+      required_pull_request_reviews:
+        required_approving_review_count: 1
+      required_status_checks:
+        strict: true
+        contexts: 
+          - 'build-and-test'
+      enforce_admins: false
+    
+    actions:
+      environment:
+        node-version: 'lts/*'
+        dotnet-version: '9.0.x'
+    
+    semantic_release:
+      prerelease: false
+      changelog: true
+      github_release: true
+
+  develop:
+    protection:
+      required_pull_request_reviews:
+        required_approving_review_count: 0
+      required_status_checks:
+        strict: false
+        contexts: 
+          - 'build-and-test'
+      enforce_admins: false
+    
+    actions:
+      environment:
+        node-version: 'latest'
+        dotnet-version: '9.0.x'
+    
+    semantic_release:
+      prerelease: true
+      changelog: false
+      github_release: false
+
+  release:
+    protection:
+      required_pull_request_reviews:
+        required_approving_review_count: 1
+      required_status_checks:
+        strict: true
+        contexts: 
+          - 'build-and-test'
+      enforce_admins: false 
