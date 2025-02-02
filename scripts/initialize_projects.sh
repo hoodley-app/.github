@@ -83,6 +83,61 @@ EOL
   echo "$ms microservice for Hoodley.app." >> "$ms/README.md"
 }
 
+# Tworzenie struktury katalogów z bezpiecznymi nazwami
+mkdir -p \
+  "microservices/admin" \
+  "microservices/analytics" \
+  "microservices/agreements" \
+  "microservices/booking" \
+  "microservices/catalog" \
+  "microservices/communication" \
+  "microservices/file-storage" \
+  "microservices/identity" \
+  "microservices/notification" \
+  "microservices/payment" \
+  "microservices/review" \
+  "microservices/security" \
+  "microservices/verification" \
+  "frontend/web-client" \
+  "frontend/mobile-client" \
+  "bff/web-api" \
+  "bff/mobile-api" \
+  "shared/templates" \
+  "shared/config"
+
+# Mapowanie bezpiecznych nazw katalogów do repozytoriów
+declare -A repo_mapping=(
+  ["microservices/admin"]="https://github.com/hoodley-app/Hoodley.Admin.git"
+  ["microservices/analytics"]="https://github.com/hoodley-app/Hoodley.Analytics.git"
+  ["microservices/agreements"]="https://github.com/hoodley-app/Hoodley.Agreements.git"
+  ["microservices/booking"]="https://github.com/hoodley-app/Hoodley.Booking.git"
+  ["microservices/catalog"]="https://github.com/hoodley-app/Hoodley.Catalog.git"
+  ["microservices/communication"]="https://github.com/hoodley-app/Hoodley.Communication.git"
+  ["microservices/file-storage"]="https://github.com/hoodley-app/Hoodley.FileStorage.git"
+  ["microservices/identity"]="https://github.com/hoodley-app/Hoodley.Identity.git"
+  ["microservices/notification"]="https://github.com/hoodley-app/Hoodley.Notification.git"
+  ["microservices/payment"]="https://github.com/hoodley-app/Hoodley.Payment.git"
+  ["microservices/review"]="https://github.com/hoodley-app/Hoodley.Review.git"
+  ["microservices/security"]="https://github.com/hoodley-app/Hoodley.Security.git"
+  ["microservices/verification"]="https://github.com/hoodley-app/Hoodley.Verification.git"
+  ["frontend/web-client"]="https://github.com/hoodley-app/hoodley.web.frontend.git"
+  ["frontend/mobile-client"]="https://github.com/hoodley-app/Hoodley.Mobile.Frontend.git"
+  ["bff/web-api"]="https://github.com/hoodley-app/Hoodley.Web.BFF.git"
+  ["bff/mobile-api"]="https://github.com/hoodley-app/Hoodley.Mobile.BFF.git"
+)
+
+# Dodawanie submodułów z użyciem bezpiecznych nazw
+for local_path in "${!repo_mapping[@]}"; do
+  repo_url="${repo_mapping[$local_path]}"
+  echo "Dodawanie submodułu do $local_path z $repo_url"
+  git submodule add "$repo_url" "$local_path"
+  
+  if [ $? -ne 0 ]; then
+    echo "Błąd podczas dodawania submodułu do $local_path"
+    exit 1
+  fi
+done
+
 # Iteruj przez wszystkie mikroserwisy, dodaj submodules i skonfiguruj pliki
 for ms in "${!microservices[@]}"; do
   add_submodule "$ms" "${microservices[$ms]}"

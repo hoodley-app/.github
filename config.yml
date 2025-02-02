@@ -103,15 +103,16 @@ docker:
 security:
   # Skanery bezpieczeństwa
   scanners:
-    - sonarcloud
-    - snyk
-    - dependabot
+    - github-code-scanning
+    - github-secret-scanning
+    - github-dependabot
   
   # Wymagane status checks
   required_checks:
-    - 'Security Scan'
-    - 'SonarCloud Analysis'
+    - 'CodeQL'
     - 'Dependency Review'
+    - 'Security Scan'
+    - 'Build and Test'
 
 # Ustawienia dla code review
 code_review:

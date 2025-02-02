@@ -16,4 +16,13 @@ jobs:
         with:
           dotnet-version: '9.0.x'
       - name: Build and Test
-        uses: Hoodley/.github/actions/dotnet-build-test@main 
+        uses: Hoodley/.github/actions/dotnet-build-test@main
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2 

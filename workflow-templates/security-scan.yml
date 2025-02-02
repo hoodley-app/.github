@@ -1,17 +1,21 @@
-name: Pull Request Check
+name: Security Scan
 
 on:
+  push:
+    branches: [ main, develop, release ]
   pull_request:
     branches: [ main, develop, release ]
+  schedule:
+    - cron: '0 0 * * 0'  # Co tydzień
 
 jobs:
-  security:
+  security-scan:
     runs-on: ubuntu-latest
     permissions:
       security-events: write
+      actions: read
       contents: read
-      pull-requests: write
-      
+
     steps:
       - uses: actions/checkout@v3
 
@@ -20,22 +24,14 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           languages: csharp, javascript
-          
+
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
 
-      # Dependency Review
-      - name: Dependency Review
-        uses: actions/dependency-review-action@v3
-        
       # Secret Scanning
       - name: Secret Scanning
         uses: github/secret-scanning/scan@v1
 
-  conventional-pr:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Conventional PR Title
-        uses: amannn/action-semantic-pull-request@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      # Dependency Review
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v3 
