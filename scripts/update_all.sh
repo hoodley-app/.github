@@ -20,15 +20,15 @@ git submodule update --remote --merge
 
 # 3. Aktualizacja szablonów
 log_info "Aktualizacja szablonów..."
-cd Hoodley.Templates
+cd shared/templates || exit
 git pull origin main
-cd ..
+cd ../..
 
 # 4. Aktualizacja wspólnych konfiguracji
-log_info "Aktualizacja .github..."
-cd .github
+log_info "Aktualizacja konfiguracji..."
+cd shared/config || exit
 git pull origin main
-cd ..
+cd ../..
 
 # 5. Rebuild wszystkich projektów
 log_info "Rebuilding projektów..."

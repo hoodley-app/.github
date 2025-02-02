@@ -13,7 +13,7 @@ log_error() { echo -e "${RED}$1${NC}"; }
 # 1. Inicjalizacja branchy (jeśli nie istnieją)
 if ! git rev-parse --verify develop &>/dev/null; then
     log_info "Inicjalizacja branchy..."
-    bash ../.github/scripts/initialize-branches.sh
+    ./scripts/initialize-branches.sh
 fi
 
 # 2. Konfiguracja CI/CD
@@ -23,41 +23,17 @@ mkdir -p .github/workflows
 # Wykryj typ projektu i skopiuj odpowiedni workflow
 if [[ -f "package.json" ]]; then
     log_info "Konfiguracja dla projektu Next.js..."
-    cat > .github/workflows/ci.yml <<EOL
-name: Frontend CI
-
-on:
-  push:
-    branches: [ main, develop, release ]
-  pull_request:
-    branches: [ main, develop, release ]
-
-jobs:
-  frontend:
-    uses: Hoodley/.github/.github/workflow-templates/nextjs-template.yml@main
-EOL
+    cp workflow-templates/nextjs-template.yml .github/workflows/ci.yml
 else
     log_info "Konfiguracja dla projektu .NET..."
-    cat > .github/workflows/ci.yml <<EOL
-name: Backend CI
-
-on:
-  push:
-    branches: [ main, develop, release ]
-  pull_request:
-    branches: [ main, develop, release ]
-
-jobs:
-  backend:
-    uses: Hoodley/.github/.github/workflow-templates/dotnet-template.yml@main
-EOL
+    cp workflow-templates/dotnet-template.yml .github/workflows/ci.yml
 fi
 
 # 3. Konfiguracja semantic-release i commitlint
 log_info "Konfiguracja semantic-release i commitlint..."
-cp ../.github/template-files/release.config.json .
-cp ../.github/template-files/commitlint.config.js .
-cp ../.github/workflow-templates/semantic-release.yml .github/workflows/
+cp template-files/release.config.json .
+cp template-files/commitlint.config.js .
+cp workflow-templates/semantic-release.yml .github/workflows/
 
 # 4. Konfiguracja husky (tylko dla frontendów)
 if [[ -f "package.json" ]]; then

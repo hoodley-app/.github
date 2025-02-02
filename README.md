@@ -6,20 +6,26 @@ Repozytorium zawierające wspólne konfiguracje, workflow i standardy dla wszyst
 
 ```
 .github/
-├── actions/                    # Reużywalne GitHub Actions
-│   ├── dotnet-build-test/     # Action dla .NET projektów
-│   └── node-build-test/       # Action dla Node.js projektów
-├── dockerfile-templates/       # Szablony Dockerfile
-│   ├── dotnet.dockerfile      # Dla .NET aplikacji
-│   └── nextjs.dockerfile      # Dla Next.js aplikacji
-├── scripts/                   # Skrypty pomocnicze
-│   ├── initialize-branches.sh # Inicjalizacja branchy
-│   ├── add_submodules.sh     # Dodawanie submodułów
-│   ├── setup-repo.sh         # Konfiguracja repozytorium
-│   └── update_all.sh         # Aktualizacja wszystkiego
-├── template-files/            # Szablony konfiguracyjne
-├── workflow-templates/        # Szablony GitHub Actions
-└── docs/                     # Dokumentacja
+├── microservices/           # Mikroserwisy jako submoduły
+│   ├── admin/              # Panel administracyjny
+│   ├── analytics/          # Analityka i raporty
+│   ├── file-storage/       # Zarządzanie plikami
+│   ├── identity/           # Autoryzacja i autentykacja
+│   └── ...                 # Pozostałe mikroserwisy
+├── frontend/               # Aplikacje frontendowe
+│   ├── web-client/        # Aplikacja webowa
+│   └── mobile-client/     # Aplikacja mobilna
+├── bff/                    # Backend-for-Frontend
+│   ├── web-api/           # BFF dla aplikacji webowej
+│   └── mobile-api/        # BFF dla aplikacji mobilnej
+├── shared/                 # Współdzielone zasoby
+│   ├── templates/         # Szablony konfiguracyjne
+│   └── config/           # Wspólne konfiguracje
+├── .github/               # GitHub Actions i konfiguracje
+│   ├── actions/          # Reużywalne GitHub Actions
+│   ├── workflows/        # GitHub Workflows
+│   └── templates/        # Szablony PR i Issues
+└── scripts/              # Skrypty pomocnicze
 ```
 
 ## 🛠 Skrypty
@@ -36,12 +42,6 @@ Tworzy standardową strukturę branchy (main, develop, release).
 Kompletna inicjalizacja nowego projektu.
 ```bash
 ./scripts/initialize_project.sh
-```
-
-#### initialize_projects.sh
-Inicjalizacja wszystkich mikroserwisów.
-```bash
-./scripts/initialize_projects.sh
 ```
 
 ### Skrypty Konfiguracyjne
@@ -76,7 +76,7 @@ Uniwersalny action dla projektów .NET:
 
 ```yaml
 steps:
-  - uses: Hoodley/.github/actions/dotnet-build-test@main
+  - uses: ./.github/actions/dotnet-build-test
 ```
 
 ### node-build-test
@@ -87,7 +87,7 @@ Action dla projektów Node.js:
 
 ```yaml
 steps:
-  - uses: Hoodley/.github/actions/node-build-test@main
+  - uses: ./.github/actions/node-build-test
 ```
 
 ## 📋 Workflow Templates
@@ -97,19 +97,13 @@ steps:
 #### app-ci.yml
 Podstawowy CI dla aplikacji:
 - Build i testy
-- Analiza kodu
+- Analiza kodu (CodeQL)
 - Security scan
 
 #### backend-ci.yml
 CI dla backendu:
 - .NET build i testy
-- SonarCloud
-- Docker build
-
-#### bff-ci.yml
-CI dla Backend-for-Frontend:
-- .NET/Node.js build
-- API testy
+- CodeQL analiza
 - Docker build
 
 #### frontend-ci.yml
@@ -126,12 +120,6 @@ Publikacja obrazów Docker:
 - Cache layers
 - Security scan
 
-#### nuget-publish.yml
-Publikacja paczek NuGet:
-- Wersjonowanie
-- Signing
-- GitHub Packages
-
 ### Szablony Kontroli Jakości
 
 #### pr-check.yml
@@ -146,7 +134,7 @@ Automatyczne release:
 - Changelog
 - GitHub Releases
 
-## 🔄 Workflow
+## �� Workflow
 
 1. **Nowy Projekt**
    ```bash
@@ -172,41 +160,27 @@ Automatyczne release:
 - [Security](./SECURITY.md)
 
 ### Zewnętrzna dokumentacja
-- [Dokumentacja projektowa](https://dobrechlopaki.atlassian.net/wiki/spaces/Hoodleyapp/overview) - Pełna dokumentacja w Atlassian Confluence
-- [Dashboard projektowy](https://github.com/orgs/hoodley-app/projects/1) - Zarządzanie zadaniami i postępem prac
+- [Dokumentacja projektowa](https://dobrechlopaki.atlassian.net/wiki/spaces/Hoodleyapp/overview)
 
-## 📦 Repozytoria
+## 🔑 Sekrety
 
-### Mikroservisy
-- [Hoodley.Admin](https://github.com/hoodley-app/Hoodley.Admin) - Panel administracyjny
-- [Hoodley.Analytics](https://github.com/hoodley-app/Hoodley.Analytics) - Analityka i raporty
-- [Hoodley.FileStorage](https://github.com/hoodley-app/Hoodley.FileStorage) - Zarządzanie plikami
-- [Hoodley.Identity](https://github.com/hoodley-app/Hoodley.Identity) - Autoryzacja i autentykacja
-- [Hoodley.Agreements](https://github.com/hoodley-app/Hoodley.Agreements) - Zarządzanie umowami
-- [Hoodley.Booking](https://github.com/hoodley-app/Hoodley.Booking) - System rezerwacji
-- [Hoodley.Catalog](https://github.com/hoodley-app/Hoodley.Catalog) - Zarządzanie katalogiem
-- [Hoodley.Communication](https://github.com/hoodley-app/Hoodley.Communication) - Komunikacja
-- [Hoodley.Notification](https://github.com/hoodley-app/Hoodley.Notification) - System powiadomień
-- [Hoodley.Payment](https://github.com/hoodley-app/Hoodley.Payment) - Obsługa płatności
-- [Hoodley.Review](https://github.com/hoodley-app/Hoodley.Review) - System recenzji
-- [Hoodley.Security](https://github.com/hoodley-app/Hoodley.Security) - Bezpieczeństwo
-- [Hoodley.Verification](https://github.com/hoodley-app/Hoodley.Verification) - Weryfikacja użytkowników
+Projekt wykorzystuje tylko wbudowane sekrety GitHub:
 
-### Frontend
-- [hoodley.web.frontend](https://github.com/hoodley-app/hoodley.web.frontend) - Aplikacja webowa
-- [Hoodley.Mobile.Frontend](https://github.com/hoodley-app/Hoodley.Mobile.Frontend) - Aplikacja mobilna
+### GITHUB_TOKEN
+Automatycznie dostępny w każdym workflow, używany do:
+- Publikacji obrazów w GitHub Container Registry
+- Publikacji paczek w GitHub Packages
+- Autoryzacji w GitHub API
+- Code scanning i dependency review
 
-### BFF (Backend For Frontend)
-- [Hoodley.Web.BFF](https://github.com/hoodley-app/Hoodley.Web.BFF) - BFF dla aplikacji webowej
-- [Hoodley.Mobile.BFF](https://github.com/hoodley-app/Hoodley.Mobile.BFF) - BFF dla aplikacji mobilnej
-
-## 📊 Monitorowanie i Analityka
-
-- **Confluence**: [Dokumentacja projektowa](https://dobrechlopaki.atlassian.net/wiki/spaces/Hoodleyapp/overview)
-- **GitHub Projects**: [Dashboard projektowy](https://github.com/orgs/hoodley-app/projects/1)
-- **SonarCloud**: Analiza jakości kodu
-- **Snyk**: Skanowanie bezpieczeństwa
-- **GitHub Security**: Code scanning i dependency review
+### Uprawnienia
+W workflow należy odpowiednio skonfigurować permissions:
+```yaml
+permissions:
+  contents: read   # Dla operacji odczytu
+  packages: write  # Dla publikacji paczek/obrazów
+  security-events: write # Dla skanów bezpieczeństwa
+```
 
 ## 🤝 Contributing
 
@@ -217,27 +191,6 @@ Automatyczne release:
 
 ## 🆘 Support
 
-- Issue Tracker: [GitHub Issues](https://github.com/Hoodley/.github/issues)
+- Issue Tracker: [GitHub Issues](https://github.com/hoodley-app/.github/issues)
 - Slack: #dev-support
 - Email: dev-support@hoodley.com
-
-## 🔑 Sekrety
-
-Projekt wykorzystuje tylko wbudowane sekrety GitHub:
-
-### GITHUB_TOKEN
-Automatycznie dostępny w każdym workflow, używany do:
-- Publikacji obrazów w GitHub Container Registry
-- Publikacji paczek NuGet w GitHub Packages
-- Autoryzacji w GitHub API
-- Code scanning i dependency review
-
-Nie wymaga żadnej dodatkowej konfiguracji!
-
-### Uprawnienia
-W workflow należy odpowiednio skonfigurować permissions:
-```yaml
-permissions:
-  contents: read   # Dla operacji odczytu
-  packages: write  # Dla publikacji paczek/obrazów
-```

@@ -5,15 +5,14 @@ GREEN='\033[0;32m'
 NC='\033[0m'
 
 echo -e "${GREEN}Klonowanie repozytorium z submodułami...${NC}"
-git clone --recursive https://github.com/Hoodley/Hoodley.git
-cd Hoodley || exit
+git clone --recursive https://github.com/hoodley-app/.github.git
+cd .github || exit
 
 echo -e "${GREEN}Nadanie uprawnień do wykonania skryptów...${NC}"
-chmod +x scripts/setup_submodules.sh
-chmod +x scripts/add_submodules.sh
+chmod +x scripts/*.sh
 
 echo -e "${GREEN}Inicjalizacja submodułów...${NC}"
-./scripts/setup_submodules.sh
+./scripts/add_submodules.sh
 
 echo -e "${GREEN}Uruchamianie projektu lokalnie...${NC}"
 docker-compose up -d

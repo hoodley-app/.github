@@ -12,7 +12,7 @@ log_error() { echo -e "${RED}$1${NC}"; }
 
 # Sprawdź czy jesteśmy w głównym repozytorium
 if [ ! -d ".git" ]; then
-  log_error "Ten skrypt musi być uruchomiony w głównym repozytorium!"
+  log_error "Ten skrypt musi być uruchomiony w głównym repozytorium .github!"
   exit 1
 fi
 
