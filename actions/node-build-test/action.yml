@@ -4,15 +4,15 @@ description: 'Builds and tests Node.js projects'
 runs:
   using: 'composite'
   steps:
-    - name: Cache npm
+    - name: Cache Yarn
       uses: actions/cache@v3
       with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        path: ~/.yarn
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         
     - name: Build and Test
       shell: bash
       run: |
-        npm ci
-        npm run build
-        npm test 
+        yarn install --frozen-lockfile --prefer-offline
+        yarn build
+        yarn test 

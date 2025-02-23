@@ -1,8 +1,8 @@
 # Dependencies stage
 FROM node:lts-alpine AS deps
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --prefer-offline --production
 
 # Builder stage
 FROM node:lts-alpine AS builder
@@ -10,7 +10,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED 1
-RUN npm run build
+RUN yarn build
 
 # Runner stage
 FROM node:lts-alpine AS runner
